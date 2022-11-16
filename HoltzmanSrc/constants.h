@@ -1,0 +1,26 @@
+/*
+ * constants.h
+ *
+ *  Created on: Nov 15, 2022
+ *      Author: willsnider
+ */
+
+#ifndef CONSTANTS_H_
+#define CONSTANTS_H_
+
+#define STACK_SIZES 256u
+
+
+#define SCREEN_PIXELS 128u
+#define SCREEN_MM 23.04
+#define CANYON_SIZE_PIXELS 118
+#define CANYON_SIZE_MM (CANYON_SIZE_PIXELS * SCREEN_MM / SCREEN_PIXELS)
+#define NORMAL_PRIORITY 21
+#define BELOW_NORMAL_PRIORITY (NORMAL_PRIORITY + 1)
+#define ABOVE_NORMAL_PRIORITY (NORMAL_PRIORITY - 1)
+#define CANYON_START ((SCREEN_PIXELS - CANYON_SIZE_PIXELS) / 2)
+#define CANYON_END (SCREEN_PIXELS - CANYON_START)
+
+
+
+#endif /* CONSTANTS_H_ */
