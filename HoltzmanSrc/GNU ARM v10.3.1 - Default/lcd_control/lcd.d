@@ -96,7 +96,9 @@ lcd_control/lcd.o: ../lcd_control/lcd.c \
  /Applications/Simplicity\ Studio.app/Contents/Eclipse/developer/sdks/gecko_sdk_suite/v3.2//platform/middleware/glib/em_types.h \
  /Applications/Simplicity\ Studio.app/Contents/Eclipse/developer/sdks/gecko_sdk_suite/v3.2//platform/middleware/glib/dmd/dmd.h \
  /Applications/Simplicity\ Studio.app/Contents/Eclipse/developer/sdks/gecko_sdk_suite/v3.2//hardware/board/inc/sl_board_control.h \
- /Applications/Simplicity\ Studio.app/Contents/Eclipse/developer/sdks/gecko_sdk_suite/v3.2//platform/common/inc/sl_enum.h
+ /Applications/Simplicity\ Studio.app/Contents/Eclipse/developer/sdks/gecko_sdk_suite/v3.2//platform/common/inc/sl_enum.h \
+ /Users/willsnider/SimplicityStudio/v5_workspace/HoltzmanSrc/holtzman_masses/hm.h \
+ /Users/willsnider/SimplicityStudio/v5_workspace/HoltzmanSrc/platform_control/platform.h
 /Applications/Simplicity\ Studio.app/Contents/Eclipse/developer/sdks/gecko_sdk_suite/v3.2//platform/common/toolchain/inc/sl_gcc_preinclude.h:
 ../lcd_control/lcd.h:
 /Applications/Simplicity\ Studio.app/Contents/Eclipse/developer/sdks/gecko_sdk_suite/v3.2//platform/micrium_os/kernel/include/os.h:
@@ -195,3 +197,5 @@ lcd_control/lcd.o: ../lcd_control/lcd.c \
 /Applications/Simplicity\ Studio.app/Contents/Eclipse/developer/sdks/gecko_sdk_suite/v3.2//platform/middleware/glib/dmd/dmd.h:
 /Applications/Simplicity\ Studio.app/Contents/Eclipse/developer/sdks/gecko_sdk_suite/v3.2//hardware/board/inc/sl_board_control.h:
 /Applications/Simplicity\ Studio.app/Contents/Eclipse/developer/sdks/gecko_sdk_suite/v3.2//platform/common/inc/sl_enum.h:
+/Users/willsnider/SimplicityStudio/v5_workspace/HoltzmanSrc/holtzman_masses/hm.h:
+/Users/willsnider/SimplicityStudio/v5_workspace/HoltzmanSrc/platform_control/platform.h:

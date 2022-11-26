@@ -12,7 +12,7 @@
 #include "constants.h"
 
 #define SHIELD_ACTIVE_MS 100
-#define SHIELD_RECHARGE_MS 3000
+#define SHIELD_RECHARGE_MS 2000
 
 #define PASSIVE_KINETIC_REDUCTION -0.75
 #define ACTIVE_KINETIC_GAIN -1.25

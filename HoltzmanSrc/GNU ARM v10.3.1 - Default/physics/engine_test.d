@@ -92,8 +92,8 @@ physics/engine_test.o: ../physics/engine_test.c \
  /Users/willsnider/SimplicityStudio/v5_workspace/HoltzmanSrc/constants.h \
  /Users/willsnider/SimplicityStudio/v5_workspace/HoltzmanSrc/holtzman_masses/hm.h \
  /Users/willsnider/SimplicityStudio/v5_workspace/HoltzmanSrc/platform_control/platform.h \
- ../physics/engine_test.h \
- /Users/willsnider/SimplicityStudio/v5_workspace/HoltzmanSrc/shield_system/shield.h
+ /Users/willsnider/SimplicityStudio/v5_workspace/HoltzmanSrc/shield_system/shield.h \
+ ../physics/engine_test.h
 /Applications/Simplicity\ Studio.app/Contents/Eclipse/developer/sdks/gecko_sdk_suite/v3.2//platform/common/toolchain/inc/sl_gcc_preinclude.h:
 ../physics/engine.h:
 /Applications/Simplicity\ Studio.app/Contents/Eclipse/developer/sdks/gecko_sdk_suite/v3.2//platform/micrium_os/kernel/include/os.h:
@@ -187,5 +187,5 @@ physics/engine_test.o: ../physics/engine_test.c \
 /Users/willsnider/SimplicityStudio/v5_workspace/HoltzmanSrc/constants.h:
 /Users/willsnider/SimplicityStudio/v5_workspace/HoltzmanSrc/holtzman_masses/hm.h:
 /Users/willsnider/SimplicityStudio/v5_workspace/HoltzmanSrc/platform_control/platform.h:
-../physics/engine_test.h:
 /Users/willsnider/SimplicityStudio/v5_workspace/HoltzmanSrc/shield_system/shield.h:
+../physics/engine_test.h:

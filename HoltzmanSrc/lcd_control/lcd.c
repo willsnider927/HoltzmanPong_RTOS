@@ -8,8 +8,16 @@
 #include "glib.h"
 #include "dmd.h"
 #include "sl_board_control.h"
+#include "holtzman_masses/hm.h"
+#include "platform_control/platform.h"
+#include "math.h"
 
-#define LCD_PERIOD 33
+extern struct HoltzmanData HMs[HM_COUNT];
+extern OS_MUTEX hm_mutex;
+extern OS_MUTEX platform_mutex;
+extern struct PlatformData platform_data;
+
+#define LCD_PERIOD 1
 
 static OS_SEM lcd_semaphore;
 static OS_TCB lcdTCB;
@@ -111,14 +119,69 @@ void LCD_init()
   DMD_updateDisplay();
 }
 
+void draw_sides(GLIB_Rectangle_t * pRectLeft, GLIB_Rectangle_t * pRectRight) {
+  GLIB_drawRectFilled(&glibContext, pRectLeft);
+  GLIB_drawRectFilled(&glibContext, pRectRight);
+}
+
+void draw_plat(int x) {
+  GLIB_Rectangle_t pRect = {
+      x - (PLATFORM_WIDTH / 2),
+      PLATFORM_Y - (PLATFORM_HEIGHT/2),
+      x + (PLATFORM_WIDTH / 2),
+      PLATFORM_Y + (PLATFORM_HEIGHT/2)
+  };
+  GLIB_drawRectFilled(&glibContext, &pRect);
+}
+
+void draw_hm(int x, int y) {
+  GLIB_drawCircleFilled(&glibContext, x, y, HM_PIXEL_RADIUS);
+}
+
+
 void lcd_task() {
   RTOS_ERR semErr;
   RTOS_ERR mutErr;
+  RTOS_ERR tmrErr;
+  OSTmrStart(&lcdTmr, &tmrErr);
+  if (tmrErr.Code != RTOS_ERR_NONE) EFM_ASSERT(false);
+  GLIB_Rectangle_t pRectLeft = {
+      0,
+      0,
+      CANYON_START,
+      SCREEN_PIXELS -1
+  };
+  GLIB_Rectangle_t pRectRight = {
+      CANYON_END,
+      0,
+      SCREEN_PIXELS - 1,
+      SCREEN_PIXELS -1
+  };
 
-  //TODO START TIMER
+
   while (1) {
       OSSemPend(&lcd_semaphore, 0, OS_OPT_PEND_BLOCKING, NULL, &semErr);
       if (semErr.Code) EFM_ASSERT(false);
+
+      GLIB_clear(&glibContext);
+      draw_sides(&pRectLeft, &pRectRight);
+
+      OSMutexPend(&platform_mutex, 0, OS_OPT_PEND_BLOCKING, NULL, &mutErr);
+      if (mutErr.Code) EFM_ASSERT(false);
+      int platX = (int)round(platform_data.x);
+      OSMutexPost(&platform_mutex, OS_OPT_POST_NONE, &mutErr);
+      if (mutErr.Code) EFM_ASSERT(false);
+      draw_plat(platX);
+
+      OSMutexPend(&hm_mutex, 0, OS_OPT_PEND_BLOCKING, NULL, &mutErr);
+      if (mutErr.Code) EFM_ASSERT(false);
+      for (int i = 0; i < HM_COUNT; i++) {
+          draw_hm((int)round(HMs[i].x), (int)round(HMs[i].y));
+      }
+      OSMutexPost(&hm_mutex, OS_OPT_POST_NONE, &mutErr);
+      if (mutErr.Code) EFM_ASSERT(false);
+
+      DMD_updateDisplay();
   }
 }
 

@@ -15,7 +15,7 @@
 //all in pixels
 #define PLATFORM_Y SCREEN_PIXELS- 15
 #define PLATFORM_HEIGHT 5
-#define PLATFORM_WIDTH 10
+#define PLATFORM_WIDTH 24
 
 #define PLATFORM_MASS 10 //kg
 #define MAX_PIXEL_FORCE 100 //kg * px/s^2
@@ -26,13 +26,11 @@
 #define PLATFORM_BOUNCE_LIMITED false
 #define MAX_BOUNCE_SPEED 0
 
-static struct PlatformData {
-  int x;
-  int vx;
-  int ax;
-} platform_data;
-
-static OS_MUTEX platform_mutex;
+struct PlatformData {
+  double x;
+  double vx;
+  double ax;
+};
 
 void platform_task_create(void);
 void platform_task(void);

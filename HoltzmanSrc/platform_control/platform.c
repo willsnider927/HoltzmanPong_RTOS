@@ -8,12 +8,15 @@
 #include "platform.h"
 #include "capsense.h"
 
-#define PLATFORM_PERIOD 5
+#define PLATFORM_PERIOD 1
 
 static OS_SEM platform_semaphore;
 static OS_TMR platform_timer;
 static OS_TCB platformTCB;
 static CPU_STK platformSTK[STACK_SIZES];
+
+OS_MUTEX platform_mutex;
+struct PlatformData platform_data;
 
 
 void platform_timer_cb(void) {
@@ -72,12 +75,50 @@ void platform_task_create(void) {
 
 void platform_task(void) {
   RTOS_ERR semErr;
-  RTOS_ERR mutErr;
+  RTOS_ERR mutexErr;
+  RTOS_ERR tmrErr;
+  OSTmrStart(&platform_timer, &tmrErr);
+  if (tmrErr.Code != RTOS_ERR_NONE) EFM_ASSERT(false);
 
-  //TODO START TIMER
   while (1) {
       OSSemPend(&platform_semaphore, 0, OS_OPT_PEND_BLOCKING, NULL, &semErr);
       if (semErr.Code) EFM_ASSERT(false);
-      //TODO read capsense and update acceleration
+
+      CAPSENSE_Sense();
+      int pressed = -1;
+      for (int i = 0; i < 4; i++) {
+          if (CAPSENSE_getPressed(i)) {
+              if (pressed == -1) {
+                  pressed = i;
+              } else {
+                  pressed = -1;
+                  break;
+              }
+          }
+      }
+
+      OSMutexPend(&platform_mutex, 0, OS_OPT_PEND_BLOCKING, NULL, &mutexErr);
+      if (mutexErr.Code) EFM_ASSERT(false);
+
+      switch (pressed) {
+        case 0:
+          platform_data.ax = -20;
+          break;
+        case 1:
+          platform_data.ax = -10;
+          break;
+        case 2:
+          platform_data.ax = 10;
+          break;
+        case 3:
+          platform_data.ax = 20;
+          break;
+        default:
+          platform_data.ax = 0;
+          break;
+      }
+
+      OSMutexPost(&platform_mutex, OS_OPT_POST_NONE, &mutexErr);
+      if (mutexErr.Code) EFM_ASSERT(false);
   }
 }

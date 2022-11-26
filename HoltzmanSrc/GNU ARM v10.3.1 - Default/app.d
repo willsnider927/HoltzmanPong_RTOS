@@ -107,6 +107,7 @@ app.o: ../app.c \
  ../laser_system/laser.h ../lcd_control/lcd.h ../physics/engine.h \
  /Users/willsnider/SimplicityStudio/v5_workspace/HoltzmanSrc/holtzman_masses/hm.h \
  /Users/willsnider/SimplicityStudio/v5_workspace/HoltzmanSrc/platform_control/platform.h \
+ /Users/willsnider/SimplicityStudio/v5_workspace/HoltzmanSrc/shield_system/shield.h \
  ../physics/engine_test.h ../platform_control/platform.h \
  ../shield_system/shield.h ../led_control/led.h ../constants.h
 /Applications/Simplicity\ Studio.app/Contents/Eclipse/developer/sdks/gecko_sdk_suite/v3.2//platform/common/toolchain/inc/sl_gcc_preinclude.h:
@@ -219,6 +220,7 @@ app.o: ../app.c \
 ../physics/engine.h:
 /Users/willsnider/SimplicityStudio/v5_workspace/HoltzmanSrc/holtzman_masses/hm.h:
 /Users/willsnider/SimplicityStudio/v5_workspace/HoltzmanSrc/platform_control/platform.h:
+/Users/willsnider/SimplicityStudio/v5_workspace/HoltzmanSrc/shield_system/shield.h:
 ../physics/engine_test.h:
 ../platform_control/platform.h:
 ../shield_system/shield.h:

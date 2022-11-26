@@ -10,12 +10,15 @@
 #include "em_assert.h"
 #include "stdlib.h"
 
+struct HoltzmanData HMs[HM_COUNT];
+OS_MUTEX hm_mutex;
+
 
 void generate_hm(int idx) {
-  HMs[idx].x = (rand() % (CANYON_SIZE_PIXELS - 2 * HM_PIXEL_RADIUS)) + HM_PIXEL_RADIUS + CANYON_START;
-  HMs[idx].y = -1 * HM_PIXEL_RADIUS;
+  HMs[idx].x = (rand() % (CANYON_SIZE_PIXELS - (2 * HM_PIXEL_RADIUS))) + HM_PIXEL_RADIUS + CANYON_START;
+  HMs[idx].y = HM_PIXEL_RADIUS;
   HMs[idx].mode = 0;
-  HMs[idx].vx = rand() % 10;
+  HMs[idx].vx = (rand() % 20) - 10;
   HMs[idx].vy = rand() % 10;
 }
 

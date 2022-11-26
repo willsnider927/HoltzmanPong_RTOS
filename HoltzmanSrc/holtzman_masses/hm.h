@@ -19,16 +19,13 @@
 
 
 struct HoltzmanData {
-  int vx;
-  int vy;
-  int x;
-  int y;
+  double vx;
+  double vy;
+  double x;
+  double y;
   uint8_t mode;
 };
 
-static struct HoltzmanData HMs[HM_COUNT];
-
-static OS_MUTEX hm_mutex;
 
 void generate_hm(int idx);
 void hm_init(void);

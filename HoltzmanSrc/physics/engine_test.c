@@ -11,26 +11,6 @@
 #include "platform_control/platform.h"
 #include "shield_system/shield.h"
 
-
-void test_hms_check_return_to_harkonnen() {
-  struct HoltzmanData hms[] = {
-      {
-          0, //vx
-          0, //vy
-          0, //x
-          -2, //y
-          0
-      },
-  };
-  struct PlatformData plat_data = {
-      0, //x
-      0, //vx
-      0 //ax
-  };
-  check_hms_vertical(hms, &plat_data);
-  EFM_ASSERT(hms[0].y == 0); //we know it was caught and reset
-}
-
 void test_hms_check_repelled_no_shield() {
   struct HoltzmanData hms[] = {
       {
@@ -46,7 +26,11 @@ void test_hms_check_repelled_no_shield() {
       0, //vx
       0 //ax
   };
-  check_hms_vertical(hms, &plat_data);
+  struct ShieldState shieldDat = {
+        false,
+        false
+    };
+  check_hms_vertical(hms, &plat_data, &shieldDat);
   EFM_ASSERT(hms[0].vy == 10 * PASSIVE_KINETIC_REDUCTION);
 }
 
@@ -65,14 +49,12 @@ void test_hms_check_repelled_shield() {
       0, //vx
       0 //ax
   };
-  shield_state.active = true;
-  check_hms_vertical(hms, &plat_data);
-  shield_state.active = false;
+  struct ShieldState shieldDat = {
+      true,
+      false
+  };
+  check_hms_vertical(hms, &plat_data, &shieldDat);
   EFM_ASSERT(hms[0].vy == 10 * ACTIVE_KINETIC_GAIN);
-}
-
-void test_hms_game_over(void) {
-  //TODO
 }
 
 void test_platform_update(void) {
@@ -82,8 +64,8 @@ void test_platform_update(void) {
       1 //ax
   };
   update_platform(&plat_data);
-  EFM_ASSERT(plat_data.x == 66);
-  EFM_ASSERT(plat_data.vx == 3);
+  EFM_ASSERT(plat_data.x < (64 + (2 * 2 * PHYSICS_DELTA)) && plat_data.x > 64);
+  EFM_ASSERT(plat_data.vx < (2 + (2 * PHYSICS_DELTA)) && plat_data.vx > 2);
 }
 
 void test_hms_update(void) {
@@ -99,8 +81,8 @@ void test_hms_update(void) {
   update_hms(hms);
   EFM_ASSERT(hms[0].vx == 20);
   EFM_ASSERT(hms[0].vy == 5 + (GRAVITY_PIXELS * PHYSICS_DELTA));
-  EFM_ASSERT(hms[0].x == 84);
-  EFM_ASSERT(hms[0].y == 69);
+  EFM_ASSERT(hms[0].x == 64 + (20 * PHYSICS_DELTA));
+  EFM_ASSERT(hms[0].y == 64 + (5 * PHYSICS_DELTA));
 }
 
 void test_hms_update_wall(void) {
@@ -117,20 +99,13 @@ void test_hms_update_wall(void) {
     EFM_ASSERT(hms[0].vx == -20);
 }
 
-void test_integrated_physics(void) {
-  //TODO
-}
-
 
 void physics_test_driver(void) {
-  test_hms_check_return_to_harkonnen();
   test_hms_check_repelled_no_shield();
   test_hms_check_repelled_shield();
-  test_hms_game_over();
   test_platform_update();
   test_hms_update();
   test_hms_update_wall();
-  test_integrated_physics();
 }
 
 
