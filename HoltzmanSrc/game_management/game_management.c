@@ -52,6 +52,7 @@ void game_over(char cause[]) {
           if (tmrErr.Code) EFM_ASSERT(false);
       }
   }
+  turn_off_led();
   OSTmrStop(&physics_timer, OS_OPT_TMR_NONE, NULL, &tmrErr);
   if (tmrErr.Code) EFM_ASSERT(false);
   OSTmrStop(&platform_timer, OS_OPT_TMR_NONE, NULL, &tmrErr);

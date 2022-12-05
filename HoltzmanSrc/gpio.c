@@ -135,6 +135,10 @@ void GPIO_ODD_IRQHandler(void)
   CORE_EXIT_ATOMIC();
 }
 
+void turn_off_led(void) {
+  GPIO_PinOutClear(LED1_port, LED1_pin);
+}
+
 void toggle_led(void) {
   if (GPIO_PinOutGet(LED1_port, LED1_pin)) GPIO_PinOutClear(LED1_port, LED1_pin);
   else GPIO_PinOutSet(LED1_port, LED1_pin);

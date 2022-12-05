@@ -10,9 +10,11 @@
 #include "platform_control/platform.h"
 #include "gpio.h"
 #include "shield_system/shield.h"
+#include "game_management/game_management.h"
 #include "math.h"
 
 OS_TMR ledTmrs[3];
+extern enum game_state_e gameState;
 
 static OS_TCB ledTCB;
 static CPU_STK ledSTK[STACK_SIZES];
@@ -23,8 +25,11 @@ extern int MAX_SPEED;
 
 void led_timer_cb(void) {
   RTOS_ERR semErr;
-  OSSemPost(&led_semaphore, OS_OPT_POST_1 ,&semErr);
-  if(semErr.Code) EFM_ASSERT(false);
+  if (gameState == IN_PROGRESS) {
+    OSSemPost(&led_semaphore, OS_OPT_POST_1 ,&semErr);
+    if(semErr.Code) EFM_ASSERT(false);
+    toggle_led();
+  }
 }
 
 void led_task_create() {
@@ -106,6 +111,5 @@ void led_task() {
               if (tmrErr.Code) EFM_ASSERT(false);
           }
       }
-      toggle_led();
   }
 }

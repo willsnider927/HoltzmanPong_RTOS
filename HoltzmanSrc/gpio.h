@@ -34,4 +34,5 @@
 //***********************************************************************************
 void gpio_open(void);
 void drive_led(int pwn_percent);
+void turn_off_led(void);
 void toggle_led(void);
