@@ -2,11 +2,13 @@
 Final project for ECEN 3753 - Real Time Operating Systems
 
 A game played on Sillicon Labs Pearl Gecko using Micrium OS. The goal of the 
-game is to defend your base from the oncomming Harkonnen onslaught.
+game is to defend your base from the oncoming Harkonnen onslaught.
 Control your platform to stop the rocks from hitting your planet and launch the 
 rocks back at your enemy.
 
 # Controls
+
+The goal of the game is to bounce back the meteors launched at your base by bouncing them off your platform when your shield is active. If you can't reach the meteor in time, you can blow them up with your laser cannon.
 
 ### In Menu
 
