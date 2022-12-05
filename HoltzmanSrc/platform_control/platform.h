@@ -15,16 +15,12 @@
 //all in pixels
 #define PLATFORM_Y SCREEN_PIXELS- 15
 #define PLATFORM_HEIGHT 5
-#define PLATFORM_WIDTH 24
+#define PLATFORM_WIDTH 30
 
 #define PLATFORM_MASS 10 //kg
 #define MAX_PIXEL_FORCE 100 //kg * px/s^2
 #define MAX_FORCE MAX_PIXEL_FORCE * SCREEN_MM / SCREEN_PIXELS //kg * px/s^s
 #define MAX_PIXEL_ACCEL MAX_PIXEL_FORCE / PLATFORM_MASS
-
-#define PLATFORM_BOUNCE_ENABLED false
-#define PLATFORM_BOUNCE_LIMITED false
-#define MAX_BOUNCE_SPEED 0
 
 struct PlatformData {
   double x;

@@ -33,3 +33,5 @@
 // function prototypes
 //***********************************************************************************
 void gpio_open(void);
+void drive_led(int pwn_percent);
+void toggle_led(void);

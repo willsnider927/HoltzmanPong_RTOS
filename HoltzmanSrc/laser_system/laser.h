@@ -10,10 +10,6 @@
 #include "os.h"
 #include "constants.h"
 
-static uint8_t laser_charges = 5;
-
-static OS_SEM laser_semaphore;
-
 void laser_task_create(void);
 void laser_task(void);
 

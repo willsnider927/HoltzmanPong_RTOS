@@ -18,6 +18,7 @@ C_DEPS :=
 SUBDIRS := \
 . \
 autogen \
+game_management \
 gecko_sdk_3.2.3/hardware/board/src \
 gecko_sdk_3.2.3/hardware/driver/memlcd/src/memlcd_usart \
 gecko_sdk_3.2.3/hardware/driver/memlcd/src \

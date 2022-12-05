@@ -7,14 +7,24 @@
 
 #include "engine.h"
 #include "math.h"
+#include "game_management/game_management.h"
 
-extern struct HoltzmanData HMs[HM_COUNT];
+
+int GRAVITY_PIXELS = 25; //in px/s^2 can be changed later once visual
+OS_TMR physics_timer;
+
+extern uint8_t HM_COUNT;
+extern struct HoltzmanData HMs[];
 extern OS_MUTEX hm_mutex;
 extern OS_MUTEX platform_mutex;
 extern struct PlatformData platform_data;
+extern struct ShieldState shield_state;
+extern int PLATFORM_BOUNCE_ENABLED;
+extern int MAX_SPEED;
+extern int score;
+extern uint8_t auto_cannon;
 
 static OS_SEM physics_semaphore;
-static OS_TMR physics_timer;
 static OS_TCB physicsTCB;
 static CPU_STK physicsSTK[STACK_SIZES];
 
@@ -54,7 +64,7 @@ void physics_task_create(void) {
       "physics Task.",                    /* Name to help debugging.     */
       &physics_task,                   /* Pointer to the task's code. */
        DEF_NULL,                          /* Pointer to task's argument. */
-       NORMAL_PRIORITY,             /* Task's priority.            */
+       ABOVE_NORMAL_PRIORITY,             /* Task's priority.            */
       &physicsSTK[0],             /* Pointer to base of stack.   */
       (STACK_SIZES / 10u),  /* Stack limit, from base.     */
        STACK_SIZES,         /* Stack size, in CPU_STK.     */
@@ -70,9 +80,6 @@ void physics_task_create(void) {
 void physics_task(void) {
   RTOS_ERR semErr;
   RTOS_ERR mutexErr;
-  RTOS_ERR tmrErr;
-  OSTmrStart(&physics_timer, &tmrErr);
-  if (tmrErr.Code != RTOS_ERR_NONE) EFM_ASSERT(false);
 
   while(1) {
       OSSemPend(&physics_semaphore, 0, OS_OPT_PEND_BLOCKING, NULL, &semErr);
@@ -111,18 +118,22 @@ void update_platform(struct PlatformData * plat_data) {
   plat_data->x += plat_data->vx * PHYSICS_DELTA;
   plat_data->vx += plat_data->ax * PHYSICS_DELTA;
   if ((plat_data->x - (PLATFORM_WIDTH/2)) < CANYON_START) {
-      if (PLATFORM_BOUNCE_ENABLED) {
+      if (plat_data->vx < (-1 * MAX_SPEED)) {
+          game_over("Too Fast");
+      } else if (PLATFORM_BOUNCE_ENABLED) {
           plat_data->ax = 0;
-          plat_data->vx = fmax(fabs(plat_data->vx), PLATFORM_BOUNCE_LIMITED * MAX_BOUNCE_SPEED);
+          plat_data->vx = fabs(plat_data->vx);
       } else {
           plat_data->ax = 0;
           plat_data->vx = 0;
           plat_data->x = CANYON_START + PLATFORM_WIDTH/2;
       }
   } else if ((plat_data->x + (PLATFORM_WIDTH/2)) > CANYON_END) {
-      if (PLATFORM_BOUNCE_ENABLED) {
+      if (plat_data->vx > MAX_SPEED) {
+          game_over("Too Fast");
+      } else if (PLATFORM_BOUNCE_ENABLED) {
           plat_data->ax = 0;
-          plat_data->vx = fmin(-1 * fabs(plat_data->vx), PLATFORM_BOUNCE_LIMITED * MAX_BOUNCE_SPEED * -1);
+          plat_data->vx = -1 * fabs(plat_data->vx);
       } else {
           plat_data->ax = 0;
           plat_data->vx = 0;
@@ -142,13 +153,15 @@ void check_hms_vertical(struct HoltzmanData hms[], struct PlatformData * plat_da
               hms[i].vy *= shieldDat->active ? ACTIVE_KINETIC_GAIN : PASSIVE_KINETIC_REDUCTION;
           } else {
               //TODO game over (respawning hm is temporary for debugging)
-              OSMutexPend(&hm_mutex, 0, OS_OPT_PEND_BLOCKING, NULL, &mutexErr);
-              if (mutexErr.Code) EFM_ASSERT(false);
+              if (!auto_cannon || !shoot_laser(i)) {
+                decrement_life();
 
-              generate_hm(i);
-
-              OSMutexPost(&hm_mutex, OS_OPT_POST_NONE, &mutexErr);
-              if (mutexErr.Code) EFM_ASSERT(false);
+                OSMutexPend(&hm_mutex, 0, OS_OPT_PEND_BLOCKING, NULL, &mutexErr);
+                if (mutexErr.Code) EFM_ASSERT(false);
+                generate_hm(i);
+                OSMutexPost(&hm_mutex, OS_OPT_POST_NONE, &mutexErr);
+                if (mutexErr.Code) EFM_ASSERT(false);
+              }
           }
       }
       else if (hms[i].y < 0) { //hm reached the top and is continuing to harkonnens
@@ -159,6 +172,7 @@ void check_hms_vertical(struct HoltzmanData hms[], struct PlatformData * plat_da
 
           OSMutexPost(&hm_mutex, OS_OPT_POST_NONE, &mutexErr);
           if (mutexErr.Code) EFM_ASSERT(false);
+          score++;
       }
   }
 }

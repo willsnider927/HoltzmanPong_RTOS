@@ -11,6 +11,8 @@
 #include "os.h"
 #include "constants.h"
 
+#define CANNON_LENGTH 17
+
 void LCD_init(void);
 void lcd_task(void);
 void lcd_timer_cb(void);

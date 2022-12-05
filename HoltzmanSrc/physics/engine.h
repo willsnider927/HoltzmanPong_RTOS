@@ -14,9 +14,8 @@
 #include "platform_control/platform.h"
 #include "shield_system/shield.h"
 
-#define GRAVITY_PIXELS 25 //in px/s^2 can be changed later once visual
 #define GRAVITY GRAVITY_PIXELS * SCREEN_MM / SCREEN_PIXELS
-#define GAME_OVER_SPEED 5
+#define GAME_OVER_SPEED 25
 #define PHYSICS_PERIOD 1
 #define PHYSICS_DELTA (PHYSICS_PERIOD / 10.0)
 

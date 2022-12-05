@@ -10,12 +10,15 @@
 
 #define PLATFORM_PERIOD 1
 
+int PLATFORM_BOUNCE_ENABLED;
+int MAX_SPEED = 100;
+OS_TMR platform_timer;
+OS_MUTEX platform_mutex;
+
 static OS_SEM platform_semaphore;
-static OS_TMR platform_timer;
 static OS_TCB platformTCB;
 static CPU_STK platformSTK[STACK_SIZES];
 
-OS_MUTEX platform_mutex;
 struct PlatformData platform_data;
 
 
@@ -55,7 +58,7 @@ void platform_task_create(void) {
        "platform Task.",                    /* Name to help debugging.     */
        &platform_task,                   /* Pointer to the task's code. */
         DEF_NULL,                          /* Pointer to task's argument. */
-        NORMAL_PRIORITY,             /* Task's priority.            */
+        ABOVE_NORMAL_PRIORITY-1,             /* Task's priority.            */
        &platformSTK[0],             /* Pointer to base of stack.   */
        (STACK_SIZES / 10u),  /* Stack limit, from base.     */
         STACK_SIZES,         /* Stack size, in CPU_STK.     */
@@ -68,6 +71,7 @@ void platform_task_create(void) {
     OSMutexCreate(&platform_mutex, "platform_mutex", &mutexErr);
     if (semErr.Code || tmrErr.Code || tskErr.Code || mutexErr.Code) EFM_ASSERT(false);
 
+    PLATFORM_BOUNCE_ENABLED = false;
     platform_data.ax = 0;
     platform_data.vx = 0;
     platform_data.x = SCREEN_PIXELS / 2;
@@ -76,9 +80,6 @@ void platform_task_create(void) {
 void platform_task(void) {
   RTOS_ERR semErr;
   RTOS_ERR mutexErr;
-  RTOS_ERR tmrErr;
-  OSTmrStart(&platform_timer, &tmrErr);
-  if (tmrErr.Code != RTOS_ERR_NONE) EFM_ASSERT(false);
 
   while (1) {
       OSSemPend(&platform_semaphore, 0, OS_OPT_PEND_BLOCKING, NULL, &semErr);
@@ -102,16 +103,16 @@ void platform_task(void) {
 
       switch (pressed) {
         case 0:
-          platform_data.ax = -20;
+          platform_data.ax = -24;
           break;
         case 1:
-          platform_data.ax = -10;
+          platform_data.ax = -12;
           break;
         case 2:
-          platform_data.ax = 10;
+          platform_data.ax = 12;
           break;
         case 3:
-          platform_data.ax = 20;
+          platform_data.ax = 24;
           break;
         default:
           platform_data.ax = 0;

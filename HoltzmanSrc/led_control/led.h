@@ -10,8 +10,6 @@
 #include "os.h"
 #include "constants.h"
 
-static OS_SEM led_semaphore;
-
 void led_task_create();
 void led_task();
 

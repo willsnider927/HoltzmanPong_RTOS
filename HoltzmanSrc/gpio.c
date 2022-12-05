@@ -5,7 +5,14 @@
 //***********************************************************************************
 
 #include "gpio.h"
+#include "stdlib.h"
+#include "os.h"
+#include "game_management/game_management.h"
 
+extern OS_Q shield_msg;
+extern OS_Q btn_q;
+extern OS_SEM laser_semaphore;
+extern enum game_state_e gameState;
 
 
 //***********************************************************************************
@@ -43,8 +50,6 @@
 // functions
 
 //***********************************************************************************
-
-
 /***************************************************************************//**
 
  * @brief
@@ -83,8 +88,25 @@ void gpio_open(void)
  ******************************************************************************/
 void GPIO_EVEN_IRQHandler(void)
 {
-//TODO/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  CORE_DECLARE_IRQ_STATE;
+  CORE_ENTER_ATOMIC();
   GPIO_IntClear(GPIO_IntGet());
+
+  RTOS_ERR qErr;
+  uint8_t * btn_pressed = malloc(sizeof(uint8_t));
+  *btn_pressed = 0;
+  if (gameState == IN_PROGRESS) {
+    RTOS_ERR semErr;
+    if (!GPIO_PinInGet(BUTTON0_port, BUTTON0_pin)) {
+        OSSemPost(&laser_semaphore, OS_OPT_POST_1 + OS_OPT_POST_NO_SCHED, &semErr);
+        if (semErr.Code) EFM_ASSERT(false);
+    }
+  } else if (!GPIO_PinInGet(BUTTON0_port, BUTTON0_pin)) {
+        OSQPost(&btn_q, btn_pressed, 1, OS_OPT_POST_FIFO, &qErr);
+        if (qErr.Code) EFM_ASSERT(false);
+  }
+
+  CORE_EXIT_ATOMIC();
 }
 
 /***************************************************************************//**
@@ -93,7 +115,28 @@ void GPIO_EVEN_IRQHandler(void)
  ******************************************************************************/
 void GPIO_ODD_IRQHandler(void)
 {
-//TODO///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  CORE_DECLARE_IRQ_STATE;
+  CORE_ENTER_ATOMIC();
   GPIO_IntClear(GPIO_IntGet());
+
+  RTOS_ERR qErr;
+  uint8_t * btn_pressed = malloc(sizeof(uint8_t));;
+  *btn_pressed = 1;
+  if (gameState == IN_PROGRESS) {
+      uint8_t * button1_msg = malloc(sizeof(uint8_t));
+      *button1_msg = !GPIO_PinInGet(BUTTON1_port, BUTTON1_pin);
+      OSQPost(&shield_msg, button1_msg, 1, OS_OPT_POST_FIFO, &qErr);
+      if (qErr.Code) EFM_ASSERT(false);
+  } else if (!GPIO_PinInGet(BUTTON1_port, BUTTON1_pin)) {
+      OSQPost(&btn_q, btn_pressed, 1, OS_OPT_POST_FIFO, &qErr);
+      if (qErr.Code) EFM_ASSERT(false);
+  }
+
+  CORE_EXIT_ATOMIC();
+}
+
+void toggle_led(void) {
+  if (GPIO_PinOutGet(LED1_port, LED1_pin)) GPIO_PinOutClear(LED1_port, LED1_pin);
+  else GPIO_PinOutSet(LED1_port, LED1_pin);
 }
 

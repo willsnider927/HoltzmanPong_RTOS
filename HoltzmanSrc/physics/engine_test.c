@@ -11,13 +11,15 @@
 #include "platform_control/platform.h"
 #include "shield_system/shield.h"
 
+extern int GRAVITY_PIXELS;
+
 void test_hms_check_repelled_no_shield() {
   struct HoltzmanData hms[] = {
       {
           0, //vx
-          10, //vy
+          30, //vy
           5, //x
-          PLATFORM_Y, //y
+          PLATFORM_Y + 1, //y
           0
       },
   };
@@ -31,14 +33,14 @@ void test_hms_check_repelled_no_shield() {
         false
     };
   check_hms_vertical(hms, &plat_data, &shieldDat);
-  EFM_ASSERT(hms[0].vy == 10 * PASSIVE_KINETIC_REDUCTION);
+  EFM_ASSERT(hms[0].vy == 30 * PASSIVE_KINETIC_REDUCTION);
 }
 
 void test_hms_check_repelled_shield() {
   struct HoltzmanData hms[] = {
       {
           0, //vx
-          10, //vy
+          30, //vy
           5, //x
           PLATFORM_Y, //y
           0
@@ -54,7 +56,7 @@ void test_hms_check_repelled_shield() {
       false
   };
   check_hms_vertical(hms, &plat_data, &shieldDat);
-  EFM_ASSERT(hms[0].vy == 10 * ACTIVE_KINETIC_GAIN);
+  EFM_ASSERT(hms[0].vy == 30 * ACTIVE_KINETIC_GAIN);
 }
 
 void test_platform_update(void) {
@@ -109,7 +111,7 @@ void physics_test_driver(void) {
 }
 
 
-//none of the tests currently work, need to do stubbing for mutexes
+//All 5 tests are passing
 
 
 

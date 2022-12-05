@@ -33,6 +33,7 @@
 #include "platform_control/platform.h"
 #include "shield_system/shield.h"
 #include "led_control/led.h"
+#include "game_management/game_management.h"
 #include "constants.h"
 
 /***************************************************************************//**
@@ -96,7 +97,6 @@ void app_init(void)
 
   // Initialize our tasks
 
-  hm_init();
   laser_task_create();
   physics_task_create();
   platform_task_create();
@@ -104,6 +104,7 @@ void app_init(void)
   led_task_create();
   LCD_init();
   App_IdleTaskCreate();
+  game_stopped_task_create();
 
   //tests
   physics_test_driver();

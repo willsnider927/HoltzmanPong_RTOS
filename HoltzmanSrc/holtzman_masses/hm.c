@@ -10,9 +10,9 @@
 #include "em_assert.h"
 #include "stdlib.h"
 
-struct HoltzmanData HMs[HM_COUNT];
+uint8_t HM_COUNT = 1;
+struct HoltzmanData HMs[2];
 OS_MUTEX hm_mutex;
-
 
 void generate_hm(int idx) {
   HMs[idx].x = (rand() % (CANYON_SIZE_PIXELS - (2 * HM_PIXEL_RADIUS))) + HM_PIXEL_RADIUS + CANYON_START;

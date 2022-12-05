@@ -12,7 +12,6 @@
 #include "os.h"
 #include "constants.h"
 
-#define HM_COUNT 1
 #define HM_PIXEL_RADIUS 3
 #define HOLTZMAN_DIAMETER (2*HM_PIXEL_RADIUS) * SCREEN_MM / SCREEN_PIXELS
 #define SIDE_HIT_KINETIC_REDUCTION 0.75

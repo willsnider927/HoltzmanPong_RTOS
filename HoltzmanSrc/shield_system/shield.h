@@ -11,19 +11,17 @@
 #include "os.h"
 #include "constants.h"
 
-#define SHIELD_ACTIVE_MS 100
-#define SHIELD_RECHARGE_MS 2000
+#define SHIELD_ACTIVE_100MS 5
+#define SHIELD_RECHARGE_100MS 15
 
 #define PASSIVE_KINETIC_REDUCTION -0.75
 #define ACTIVE_KINETIC_GAIN -1.25
 
-static struct ShieldState {
+struct ShieldState {
   bool active;
   bool recharging;
-} shield_state;
+};
 
-static OS_MUTEX shield_mutex;
-static OS_Q shield_msg;
 
 void shield_task(void);
 void shield_task_create(void);
